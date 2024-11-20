@@ -1,10 +1,17 @@
-
-import java.awt.HeadlessException;
-import java.beans.Statement;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -16,25 +23,13 @@ import javax.swing.JOptionPane;
  * @author Pongo
  */
 public class ResepMasakan extends javax.swing.JFrame {
-    private Statement St;
-    private Connection Con;
-    private String sql="";
+
     /**
      * Creates new form ResepMasakan
      */
     public ResepMasakan() {
         initComponents();
-    }
- private void KoneksiDatabase(){
-        try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            
-            Con = DriverManager.getConnection("jdbc:mysql://localhost:3306/db_keuanganpribadi","root", "");
-            
-            JOptionPane.showMessageDialog(null, "Koneksi Berhasil");
-        }catch (HeadlessException | ClassNotFoundException | SQLException e){
-            System.out.println("Koneksi Gagal " + e.getMessage());
-        }
+        Tanggal();
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -45,21 +40,310 @@ public class ResepMasakan extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        lbTanggal = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jLabel5 = new javax.swing.JLabel();
+        txtNamaResep = new javax.swing.JTextField();
+        cmbResep = new javax.swing.JComboBox<>();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        areaBahan = new javax.swing.JTextArea();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        areaMembuat = new javax.swing.JTextArea();
+        btnSimpan = new javax.swing.JButton();
+        btnBatal = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnHapus = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tabelResep = new javax.swing.JTable();
+        btnImpor = new javax.swing.JButton();
+        btnEkspor = new javax.swing.JButton();
+        btnKeluar = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBackground(new java.awt.Color(204, 255, 255));
+
+        jPanel2.setBackground(new java.awt.Color(102, 102, 255));
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("APLIKASI RESEP MASAKAN ");
+
+        lbTanggal.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lbTanggal.setForeground(new java.awt.Color(255, 255, 255));
+        lbTanggal.setText("Tanggal");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lbTanggal, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(40, 40, 40))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(lbTanggal))
+                .addContainerGap())
+        );
+
+        jLabel2.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel2.setText("Nama Resep");
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel3.setText("Kategori");
+
+        jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel4.setText("Bahan-Bahan");
+
+        jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLabel5.setText("Cara Membuat");
+
+        txtNamaResep.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+
+        cmbResep.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        cmbResep.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Makanan", "Minuman", "Lainnya" }));
+
+        areaBahan.setColumns(20);
+        areaBahan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        areaBahan.setRows(5);
+        jScrollPane1.setViewportView(areaBahan);
+
+        areaMembuat.setColumns(20);
+        areaMembuat.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        areaMembuat.setRows(5);
+        jScrollPane2.setViewportView(areaMembuat);
+
+        btnSimpan.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnSimpan.setText("Simpan Resep");
+        btnSimpan.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSimpanActionPerformed(evt);
+            }
+        });
+
+        btnBatal.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnBatal.setText("Batal");
+        btnBatal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBatalActionPerformed(evt);
+            }
+        });
+
+        btnEdit.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnEdit.setText("Edit Resep");
+        btnEdit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditActionPerformed(evt);
+            }
+        });
+
+        btnHapus.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnHapus.setText("Hapus Resep");
+        btnHapus.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnHapusActionPerformed(evt);
+            }
+        });
+
+        jPanel3.setBackground(new java.awt.Color(102, 153, 255));
+
+        tabelResep.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Nama Resep", "Kategori", "Bahan-bahan", "Cara Membuat"
+            }
+        ));
+        jScrollPane3.setViewportView(tabelResep);
+
+        btnImpor.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnImpor.setText("Impor");
+        btnImpor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnImporActionPerformed(evt);
+            }
+        });
+
+        btnEkspor.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnEkspor.setText("Ekspor");
+        btnEkspor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEksporActionPerformed(evt);
+            }
+        });
+
+        btnKeluar.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        btnKeluar.setText("Keluar");
+        btnKeluar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnKeluarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(425, Short.MAX_VALUE)
+                .addComponent(btnEkspor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnImpor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnKeluar)
+                .addContainerGap())
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createSequentialGroup()
+                    .addGap(10, 10, 10)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 646, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(168, 168, 168)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnKeluar)
+                    .addComponent(btnImpor)
+                    .addComponent(btnEkspor))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGap(227, 227, 227)))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(20, 20, 20)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnSimpan)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnHapus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnEdit)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnBatal, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1)
+                    .addComponent(txtNamaResep)
+                    .addComponent(cmbResep, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(12, 12, 12)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(txtNamaResep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(cmbResep, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 154, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSimpan)
+                    .addComponent(btnBatal)
+                    .addComponent(btnEdit)
+                    .addComponent(btnHapus))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 26, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnSimpanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSimpanActionPerformed
+                tambahResep();// TODO add your handling code here:
+    }//GEN-LAST:event_btnSimpanActionPerformed
+
+    private void btnBatalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBatalActionPerformed
+            batal();        // TODO add your handling code here:
+    }//GEN-LAST:event_btnBatalActionPerformed
+
+    private void btnHapusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHapusActionPerformed
+        hapusResep();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnHapusActionPerformed
+
+    private void btnEditActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditActionPerformed
+        editResep();
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnEditActionPerformed
+
+    private void btnKeluarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKeluarActionPerformed
+           keluar();
+           // TODO add your handling code here:
+    }//GEN-LAST:event_btnKeluarActionPerformed
+
+    private void btnEksporActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEksporActionPerformed
+            eksporData();        
+            // TODO add your handling code here:
+    }//GEN-LAST:event_btnEksporActionPerformed
+
+    private void btnImporActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnImporActionPerformed
+             imporData();
+             // TODO add your handling code here:
+    }//GEN-LAST:event_btnImporActionPerformed
 
     /**
      * @param args the command line arguments
@@ -97,5 +381,202 @@ public class ResepMasakan extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTextArea areaBahan;
+    private javax.swing.JTextArea areaMembuat;
+    private javax.swing.JButton btnBatal;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnEkspor;
+    private javax.swing.JButton btnHapus;
+    private javax.swing.JButton btnImpor;
+    private javax.swing.JButton btnKeluar;
+    private javax.swing.JButton btnSimpan;
+    private javax.swing.JComboBox<String> cmbResep;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JLabel lbTanggal;
+    private javax.swing.JTable tabelResep;
+    private javax.swing.JTextField txtNamaResep;
     // End of variables declaration//GEN-END:variables
+
+    private void tambahResep() {
+        // Mendapatkan model tabel yang digunakan untuk mengelola data
+        DefaultTableModel model = (DefaultTableModel) tabelResep.getModel();
+        // Mendapatkan indeks baris yang dipilih di tabel
+        int selectedRow = tabelResep.getSelectedRow(); // Mengambil indeks baris yang dipilih oleh pengguna
+        // Mengecek apakah ada kolom yang kosong atau kategori belum dipilih
+        if (txtNamaResep.getText().trim().equals("") || cmbResep.getSelectedItem() == null 
+            || cmbResep.getSelectedItem().toString().equals("-- Pilih --") 
+            || areaBahan.getText().trim().equals("") || areaMembuat.getText().trim().equals("")) {
+                // Jika ada kolom lainnya yang kosong, tampilkan pesan peringatan
+                JOptionPane.showMessageDialog(null, "Data Yang Anda Masukkan Belum Lengkap! Silahkan Ulangi Lagi!");
+        } else {
+            // Jika ada baris yang dipilih (edit mode)
+            if (selectedRow != -1) {
+                // Mengubah data pada baris yang dipilih
+                model.setValueAt(txtNamaResep.getText(), selectedRow, 0);             // Kolom 1: Nama Resep
+                model.setValueAt(cmbResep.getSelectedItem().toString(), selectedRow, 1); // Kolom 2: Kategori
+                model.setValueAt(areaBahan.getText(), selectedRow, 2);                // Kolom 3: Bahan
+                model.setValueAt(areaMembuat.getText(), selectedRow, 3);              // Kolom 4: Langkah Membuat
+
+                // Menampilkan pesan konfirmasi bahwa data resep berhasil diubah
+                JOptionPane.showMessageDialog(null, "Resep Berhasil Diubah");
+            } else {
+                // Jika tidak ada baris yang dipilih, tambahkan baris baru
+                model.addRow(new Object[]{
+                    txtNamaResep.getText(),            // Menambahkan Nama Resep
+                    cmbResep.getSelectedItem().toString(), // Menambahkan Kategori
+                    areaBahan.getText(),               // Menambahkan Bahan
+                    areaMembuat.getText()              // Menambahkan Langkah Membuat
+                });
+                // Menampilkan pesan konfirmasi bahwa data resep berhasil disimpan
+                JOptionPane.showMessageDialog(null, "Resep Berhasil Disimpan");
+            }
+            // Menghapus data yang ada di form setelah data dimasukkan ke tabel
+            batal(); // Fungsi batal() mengatur ulang form, membersihkan semua input pengguna
+        }
+
+    }
+
+    private void batal() {
+        txtNamaResep.setText("");
+        cmbResep.setSelectedIndex(0);
+        areaBahan.setText("");
+        areaMembuat.setText("");
+        tabelResep.clearSelection();
+    }
+
+    private void hapusResep() {
+        DefaultTableModel model = (DefaultTableModel) tabelResep.getModel();
+        int selectedRow = tabelResep.getSelectedRow();
+        if (selectedRow != -1) {
+            model.removeRow(selectedRow);
+            JOptionPane.showMessageDialog(null, "Resep berhasil dihapus!");
+        } else {
+            JOptionPane.showMessageDialog(null, "Pilih resep yang ingin dihapus.");
+        }
+    }
+
+    private void editResep() {
+        // Mendapatkan model tabel yang digunakan untuk mengelola data
+        DefaultTableModel model = (DefaultTableModel) tabelResep.getModel();
+        // Mendapatkan indeks baris yang dipilih di tabel
+        int selectedRow = tabelResep.getSelectedRow(); // Mendapatkan indeks baris yang dipilih oleh pengguna
+        // Mengecek apakah ada baris yang dipilih
+        if (selectedRow != -1) { // Jika ada baris yang dipilih (indeks bukan -1)
+            // Mengambil data dari baris yang dipilih dan menampilkan ke dalam field
+            String namaResep = model.getValueAt(selectedRow, 0).toString();      // Kolom 1: Nama Resep
+            String kategori = model.getValueAt(selectedRow, 1).toString();      // Kolom 2: Kategori
+            String bahan = model.getValueAt(selectedRow, 2).toString();         // Kolom 3: Bahan
+            String langkahMembuat = model.getValueAt(selectedRow, 3).toString(); // Kolom 4: Langkah Membuat
+            // Menampilkan data yang diambil di field input untuk diedit
+            txtNamaResep.setText(namaResep);            // Mengisi field Nama Resep dengan nilai yang diambil dari tabel
+            cmbResep.setSelectedItem(kategori);         // Mengisi dropdown Kategori dengan nilai yang sesuai dari tabel
+            areaBahan.setText(bahan);                   // Mengisi area Bahan dengan nilai yang diambil dari tabel
+            areaMembuat.setText(langkahMembuat);        // Mengisi area Langkah Membuat dengan nilai yang diambil dari tabel
+            // Menampilkan pesan bahwa data siap untuk diubah
+            JOptionPane.showMessageDialog(null, "Silakan Ubah Data dan Klik Simpan");
+        } else {
+            // Jika tidak ada baris yang dipilih (indeks -1), tampilkan pesan peringatan
+            JOptionPane.showMessageDialog(null, "Pilih Pilih resep yang ingin diedit");
+        }
+    }
+
+    private void imporData() {
+    // Membuka dialog untuk memilih file Excel
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Buka File Resep"); // Set judul dialog
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files", "xls")); // Filter hanya file .xls
+    int result = fileChooser.showOpenDialog(null); // Menampilkan dialog pilih file
+    if (result == JFileChooser.APPROVE_OPTION) { // Jika pengguna memilih file
+        File file = fileChooser.getSelectedFile(); // Dapatkan file yang dipilih
+        try (FileInputStream fis = new FileInputStream(file)) { // Membuka file dengan FileInputStream
+            HSSFWorkbook workbook = new HSSFWorkbook(fis); // Membaca workbook dari file Excel
+            HSSFSheet sheet = workbook.getSheetAt(0); // Ambil sheet pertama dari workbook
+            DefaultTableModel model = (DefaultTableModel) tabelResep.getModel();
+            // Loop untuk membaca setiap baris di sheet
+            for (Row row : sheet) {
+                if (row.getPhysicalNumberOfCells() == 0) continue; // Lewati baris kosong
+
+                int columnCount = row.getPhysicalNumberOfCells(); // Hitung jumlah kolom di baris
+                String[] data = new String[columnCount]; // Array untuk menyimpan data baris
+                // Loop untuk membaca setiap sel di baris
+                for (int i = 0; i < columnCount; i++) {
+                    Cell cell = row.getCell(i, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK); // Ambil sel, buat kosong jika null
+                    data[i] = cell.toString().trim(); // Ambil data dari sel dan bersihkan spasi
+                }
+                model.addRow(data); // Tambahkan data baris ke tabel
+            }
+            JOptionPane.showMessageDialog(null, "Data Resep Berhasil Diimpor dari File Excel!"); // Tampilkan pesan sukses
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Terjadi Kesalahan: " + ex.getMessage()); // Tampilkan pesan error
+        }
+    }
 }
+
+ private void eksporData() {
+    // Membuka dialog untuk memilih lokasi file Excel
+    JFileChooser fileChooser = new JFileChooser();
+    fileChooser.setDialogTitle("Simpan File Resep"); // Set judul dialog
+    fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files", "xls")); // Filter hanya file .xls
+    int result = fileChooser.showSaveDialog(null); // Menampilkan dialog simpan file
+    if (result == JFileChooser.APPROVE_OPTION) { // Jika pengguna memilih file
+        File file = fileChooser.getSelectedFile(); // Dapatkan file yang dipilih  
+        // Tambahkan ekstensi .xls jika belum ada
+        if (!file.getName().endsWith(".xls")) {
+            file = new File(file.getAbsolutePath() + ".xls");
+        }
+        try (FileOutputStream fos = new FileOutputStream(file)) { // Membuka file output stream untuk file Excel
+            HSSFWorkbook workbook = new HSSFWorkbook(); // Membuat workbook baru
+            HSSFSheet sheet = workbook.createSheet("Resep"); // Membuat sheet baru
+            DefaultTableModel model = (DefaultTableModel) tabelResep.getModel();
+            // Loop untuk menulis data dari tabel ke sheet Excel
+            for (int i = 0; i < model.getRowCount(); i++) {
+                HSSFRow row = sheet.createRow(i); // Membuat baris baru di sheet
+                for (int j = 0; j < model.getColumnCount(); j++) {
+                    Object value = model.getValueAt(i, j); // Ambil nilai dari tabel
+                    // Cek tipe data dan tulis ke sel
+                    if (value instanceof Number) {
+                        row.createCell(j).setCellValue(((Number) value).doubleValue()); // Tulis angka
+                    } else if (value instanceof Boolean) {
+                        row.createCell(j).setCellValue((Boolean) value); // Tulis nilai boolean
+                    } else if (value instanceof Date) {
+                        row.createCell(j).setCellValue((Date) value); // Tulis tanggal
+                    } else {
+                        row.createCell(j).setCellValue(value.toString()); // Tulis teks
+                    }
+                }
+            }
+            workbook.write(fos); // Tulis workbook ke file output stream
+            JOptionPane.showMessageDialog(null, "Data Resep Berhasil Diekspor ke File Excel!"); // Tampilkan pesan sukses
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, "Terjadi Kesalahan: " + ex.getMessage()); // Tampilkan pesan error
+        }
+    }
+}
+
+
+    private void keluar() {
+       System.exit(0);
+    }
+    private void Tanggal() {
+         // Mendapatkan tanggal sekarang
+                java.util.Date tanggalSekarang = new java.util.Date();
+                // Menentukan format tanggal
+                SimpleDateFormat formatTanggal = new SimpleDateFormat("dd-MM-yyyy");
+                // Mengonversi tanggal menjadi String
+                String tanggal = formatTanggal.format(tanggalSekarang);
+                // Menampilkan tanggal di label tanggal
+                lbTanggal.setText("Tanggal : " + tanggal);
+          
+    }
+}
+

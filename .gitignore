@@ -24,3 +24,4 @@ hs_err_pid*
 replay_pid*
 /Aplikasi Resep Masakan/nbproject/private/
 /Aplikasi Resep Masakan/build/
+*.xml
